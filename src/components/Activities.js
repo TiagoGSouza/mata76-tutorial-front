@@ -1,11 +1,12 @@
 import React from 'react';
-import { Form, Button } from 'react-bootstrap'; 
+import { Form, Button } from 'react-bootstrap';
 
 class Activities extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
+            id: '',
             user: '',
             date: '',
             startTime: '',
@@ -14,15 +15,40 @@ class Activities extends React.Component {
         }
     }
 
+    componentDidMount() {
+        try{
+            const jsonData = localStorage.getItem('activity');
+            const data = JSON.parse(jsonData);
+            let h;
+            if(data.endTIme === 0){
+                h = '';
+            }
+            else{
+                h = data.endTIme
+            }
+            this.setState({
+                id: data.id,
+                user: data.user,
+                date: data.date,
+                startTime: data.startTime,
+                endTime: h,
+                status: data.status
+                });
+            localStorage.clear();
+        } catch {
+            console.log('localstorage vazio');
+        }
+      }
+
     validate(c, t) {
         const campo = document.getElementById(c);
         const valor = campo.value;
-        const regex = /^[0-9]+$/; // Permite somente números
+        const regex = /^(\d{4}|)$/;
 
         const text = document.getElementById(t).textContent;
 
         if (!regex.test(valor)) {
-            alert("O campo " + text + " aceita somente números.");
+            alert("O campo " + text + " precisa de 4 números.");
             return false;
         }
         return true;
@@ -51,21 +77,47 @@ class Activities extends React.Component {
                 endTime: this.state.endTime,
                 status: this.state.status
             }
-            fetch("http://localhost:8000/register", {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(activity)
-            })
-            .then((res) => {
-                if(res.ok){
-                    console.log("Ok");
-                    this.goToHome();
-                }
-                else{
-                    console.log("Deu erro");
-                }
-            })
+            if(this.state.id === ''){
+                this.create(activity);
+            }
+            else {
+                this.update(activity);
+            }
         }
+    }
+
+    update(activity) {
+        fetch("http://localhost:8000/update/"+this.state.id, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(activity)
+        })
+        .then((res) => {
+            if(res.ok){
+                console.log("Ok");
+                this.goToHome();
+            }
+            else{
+                console.log("Deu erro");
+            }
+        })
+    }
+
+    create = (activity) => {
+        fetch("http://localhost:8000/register", {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(activity)
+        })
+        .then((res) => {
+            if(res.ok){
+                console.log("Ok");
+                this.goToHome();
+            }
+            else{
+                console.log("Deu erro");
+            }
+        })
     }
 
     updateUser = (e) => {
@@ -123,7 +175,7 @@ class Activities extends React.Component {
 
             <Form.Group className="mb-3" controlId="st">
                 <Form.Label>Status</Form.Label>
-                <Form.Control type="text" value={this.state.status} onChange={this.updateStatus}/>
+                <Form.Control type="text" value={this.state.status} readOnly={true}/>
             </Form.Group>
 
             <Button variant="primary" type="submit" onClick={() => this.register()}>

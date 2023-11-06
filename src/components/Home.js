@@ -1,6 +1,5 @@
 import React from 'react';
-import { Table, Button } from 'react-bootstrap'; 
-
+import { Table, Button } from 'react-bootstrap';
 class Home extends React.Component {
 
     constructor(props){
@@ -35,13 +34,21 @@ class Home extends React.Component {
                 }
             })
     }
+    update(id) {
+        fetch("http://localhost:8000/"+id, {method: 'GET'})
+        .then((res) => res.json())
+        .then(async (body) => {
+            localStorage.clear();
+            localStorage.setItem('activity', JSON.stringify(body));
+            window.location.replace("http://localhost:3000/register");
+        });
+      }
 
     render(){
         return (
             <Table>
                 <thead>
                     <tr>
-                        <th>Activity</th>
                         <th>Usuário</th>
                         <th>Data da Atividade</th>
                         <th>Horário de Inicio</th>
@@ -54,13 +61,15 @@ class Home extends React.Component {
                     {
                         this.state.activities.map((activity) =>
                             <tr key = {activity.id}>
-                                <td> {activity.id}</td>
                                 <td> {activity.user} </td>
                                 <td> {activity.date} </td>
                                 <td> {activity.startTime} </td>
                                 <td> {activity.endTIme} </td>
                                 <td> {activity.status} </td>
-                                <td> Atualizar <Button variant="danger" onClick={() => this.delete(activity.id)}>Excluir</Button></td>
+                                <td> 
+                                    <Button variant="danger" onClick={() => this.update(activity.id)}>Atualizar</Button> 
+                                    <Button variant="danger" onClick={() => this.delete(activity.id)}>Excluir</Button>
+                                </td>
                             </tr>
                         )
                     }
