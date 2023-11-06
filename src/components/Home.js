@@ -64,7 +64,7 @@ class Home extends React.Component {
                                 <td> {activity.user} </td>
                                 <td> {activity.date} </td>
                                 <td> {activity.startTime} </td>
-                                <td> {activity.endTIme} </td>
+                                <td> {activity.endTime} </td>
                                 <td> {activity.status} </td>
                                 <td> 
                                     <Button variant="danger" onClick={() => this.update(activity.id)}>Atualizar</Button> 

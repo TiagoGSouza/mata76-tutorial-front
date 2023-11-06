@@ -19,19 +19,13 @@ class Activities extends React.Component {
         try{
             const jsonData = localStorage.getItem('activity');
             const data = JSON.parse(jsonData);
-            let h;
-            if(data.endTIme === 0){
-                h = '';
-            }
-            else{
-                h = data.endTIme
-            }
+
             this.setState({
                 id: data.id,
                 user: data.user,
                 date: data.date,
                 startTime: data.startTime,
-                endTime: h,
+                endTime: data.endTime,
                 status: data.status
                 });
             localStorage.clear();
@@ -40,15 +34,13 @@ class Activities extends React.Component {
         }
       }
 
-    validate(c, t) {
+    validate(c) {
         const campo = document.getElementById(c);
         const valor = campo.value;
-        const regex = /^(\d{4}|)$/;
-
-        const text = document.getElementById(t).textContent;
+        const regex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$|^$/;
 
         if (!regex.test(valor)) {
-            alert("O campo " + text + " precisa de 4 números.");
+            alert("O horário deve seguir o padrão HH:MM.");
             return false;
         }
         return true;
@@ -144,12 +136,6 @@ class Activities extends React.Component {
         })
     }
 
-    updateStatus = (e) => {
-        this.setState({
-            status: e.target.value
-        })
-    }
-
     render(){
         return (
             <Form>
@@ -179,7 +165,7 @@ class Activities extends React.Component {
             </Form.Group>
 
             <Button variant="primary" type="submit" onClick={() => this.register()}>
-                Criar
+                Enviar
             </Button>
             </Form>
         );
