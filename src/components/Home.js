@@ -6,7 +6,8 @@ class Home extends React.Component {
         super(props);
 
         this.state = {
-            activities: []
+            activities: [],
+            searchQuery: ''
         }
     }
 
@@ -44,37 +45,52 @@ class Home extends React.Component {
         });
       }
 
+    handleSearch = (event) => {
+        this.setState({searchQuery: event.target.value})
+    }
+
     render(){
+        const filteredActivities = this.state.activities.filter((activity) =>
+            activity.date.toLowerCase().includes(this.state.searchQuery.toLowerCase())
+            );
         return (
-            <Table>
-                <thead>
-                    <tr>
-                        <th>Usuário</th>
-                        <th>Data da Atividade</th>
-                        <th>Horário de Inicio</th>
-                        <th>Horário de Conclusão</th>
-                        <th>Status</th>
-                        <th>Opções</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        this.state.activities.map((activity) =>
-                            <tr key = {activity.id}>
-                                <td> {activity.user} </td>
-                                <td> {activity.date} </td>
-                                <td> {activity.startTime} </td>
-                                <td> {activity.endTime} </td>
-                                <td> {activity.status} </td>
-                                <td> 
-                                    <Button variant="danger" onClick={() => this.update(activity.id)}>Atualizar</Button> 
-                                    <Button variant="danger" onClick={() => this.delete(activity.id)}>Excluir</Button>
-                                </td>
-                            </tr>
-                        )
-                    }
-                </tbody>
-            </Table>
+            <div>
+                <input
+                    type='text'
+                    placeholder='Pesquise por uma data'
+                    value={this.state.searchQuery}
+                    onChange={this.handleSearch}>
+                </input>
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Data da Atividade</th>
+                            <th>Horário de Inicio</th>
+                            <th>Horário de Conclusão</th>
+                            <th>Status</th>
+                            <th>Opções</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            filteredActivities.map((activity) =>
+                                <tr key = {activity.id}>
+                                    <td> {activity.user} </td>
+                                    <td> {activity.date} </td>
+                                    <td> {activity.startTime} </td>
+                                    <td> {activity.endTime} </td>
+                                    <td> {activity.status} </td>
+                                    <td> 
+                                        <Button variant="danger" onClick={() => this.update(activity.id)}>Atualizar</Button> 
+                                        <Button variant="danger" onClick={() => this.delete(activity.id)}>Excluir</Button>
+                                    </td>
+                                </tr>
+                            )
+                        }
+                    </tbody>
+                </Table>
+            </div>
         )
     }
 }

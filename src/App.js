@@ -6,7 +6,7 @@ import {BrowserRouter, Routes, Link, Route} from 'react-router-dom';
 function App() {
   return (
     <div className="App">
-      <h1>Teste</h1>
+      <h1>Planejamento de atividades diárias.</h1>
         <BrowserRouter>
           <ul>
             <li> <Link to="/">Pagina Inicial </Link></li>
